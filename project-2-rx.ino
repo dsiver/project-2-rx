@@ -8,50 +8,52 @@
  * Fall 2015
  */
 
-#define RELAY_PIN 7
+#define RELAY_PIN 14
 #define RELAY_NO_CLOSED HIGH
 #define RELAY_NO_OPEN LOW
-#define LED_PIN 8
+#define RELAY_LED_PIN 13
 #define OFF "off"
 #define ON "on"
+#define NONE "none"
+
+String relayStatus;
 
 void setup() {
+  relayStatus = OFF;
   Serial.begin(9600);
   pinMode(RELAY_PIN, OUTPUT);
-  pinMode(LED_PIN, OUTPUT);
+  pinMode(RELAY_LED_PIN, OUTPUT);
 }
 
 void loop() {
-  test();
-}
-
-void test(){
-  toggleRelay(ON);
-  toggleLED(ON);
-  delay(5000);
+  toggleLED(OFF, RELAY_LED_PIN);
   toggleRelay(OFF);
-  toggleLED(OFF);
-  delay(5000);
+  delay(2000);
+  toggleLED(ON, RELAY_LED_PIN);
+  toggleRelay(ON);
+  delay(2000);
 }
 
-void toggleLED(String mode){
-  if(mode == ON){
-    digitalWrite(LED_PIN, HIGH);
+void toggleLED(String mode, int pin) {
+  if (mode == ON) {
+    digitalWrite(pin, HIGH);
     Serial.println("LED ON");
   }
-  else if(mode == OFF){
-    digitalWrite(LED_PIN, LOW);
+  else if (mode == OFF) {
+    digitalWrite(pin, LOW);
     Serial.println("LED OFF");
   }
 }
 
-void toggleRelay(String mode){
-  if(mode == ON){
+void toggleRelay(String mode) {
+  if (mode == ON) {
     digitalWrite(RELAY_PIN, RELAY_NO_CLOSED);
+    relayStatus = ON;
     Serial.println("RELAY_NO_CLOSED");
   }
-  else if(mode == OFF){
+  else if (mode == OFF) {
     digitalWrite(RELAY_PIN, RELAY_NO_OPEN);
+    relayStatus = OFF;
     Serial.println("RELAY_NO_OPEN");
   }
 }
