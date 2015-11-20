@@ -12,6 +12,7 @@
 #define RELAY_NO_CLOSED HIGH
 #define RELAY_NO_OPEN LOW
 #define RELAY_LED_PIN 13
+#define RX_LED_PIN 4
 #define OFF "off"
 #define ON "on"
 #define NONE "none"
@@ -23,13 +24,20 @@ void setup() {
   Serial.begin(9600);
   pinMode(RELAY_PIN, OUTPUT);
   pinMode(RELAY_LED_PIN, OUTPUT);
+  pinMode(RX_LED_PIN, OUTPUT);
 }
 
 void loop() {
+  
+}
+
+void testRelay(){
   toggleLED(OFF, RELAY_LED_PIN);
+  toggleLED(OFF, RX_LED_PIN);
   toggleRelay(OFF);
   delay(2000);
   toggleLED(ON, RELAY_LED_PIN);
+  toggleLED(ON, RX_LED_PIN);
   toggleRelay(ON);
   delay(2000);
 }
