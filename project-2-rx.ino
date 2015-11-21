@@ -25,6 +25,7 @@ void setup() {
   pinMode(RELAY_PIN, OUTPUT);
   pinMode(RELAY_LED_PIN, OUTPUT);
   pinMode(RX_LED_PIN, OUTPUT);
+  toggleRelay(ON);
 }
 
 void loop() {
@@ -40,6 +41,17 @@ void testRelay(){
   toggleLED(ON, RX_LED_PIN);
   toggleRelay(ON);
   delay(2000);
+}
+
+void cycleRelay(int times){
+  for (int i = 0; i < times; i++){
+    toggleRelay(OFF);
+    toggleLED(OFF, RELAY_LED_PIN);
+    delay(500);
+    toggleRelay(ON);
+    toggleLED(ON, RELAY_LED_PIN);
+    delay(500);
+  }
 }
 
 void toggleLED(String mode, int pin) {
