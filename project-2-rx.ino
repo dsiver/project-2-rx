@@ -27,21 +27,23 @@ void setup() {
   pinMode(RX_LED_PIN, OUTPUT);
   toggleRelay(ON);
   toggleLED(ON, RELAY_LED_PIN);
+  delay(2000);
 }
 
 void loop() {
-  
 }
 
-void testRelay() {
-  toggleLED(OFF, RELAY_LED_PIN);
-  toggleLED(OFF, RX_LED_PIN);
-  toggleRelay(OFF);
-  delay(2000);
-  toggleLED(ON, RELAY_LED_PIN);
-  toggleLED(ON, RX_LED_PIN);
-  toggleRelay(ON);
-  delay(2000);
+void test() {
+  for (int i = 0; i < 3; i++) {
+    toggleLED(ON, RX_LED_PIN);
+    toggleLED(OFF, RELAY_LED_PIN);
+    toggleRelay(OFF);
+    delay(500);
+    toggleLED(OFF, RX_LED_PIN);
+    toggleLED(ON, RELAY_LED_PIN);
+    toggleRelay(ON);
+    delay(500);
+  }
 }
 
 void cycleRelay(int times) {
