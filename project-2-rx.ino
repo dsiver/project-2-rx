@@ -7,12 +7,12 @@
  * CS 4985
  * Fall 2015
  */
-
-#define RELAY_PIN 14
+#define RELAY_PIN 7
 #define RELAY_NO_CLOSED HIGH
 #define RELAY_NO_OPEN LOW
-#define RELAY_LED_PIN 13
-#define RX_LED_PIN 4
+#define RELAY_LED_PIN 6
+#define RX_PIN A0
+#define RX_LED_PIN 2
 #define OFF "off"
 #define ON "on"
 #define NONE "none"
@@ -26,13 +26,14 @@ void setup() {
   pinMode(RELAY_LED_PIN, OUTPUT);
   pinMode(RX_LED_PIN, OUTPUT);
   toggleRelay(ON);
+  toggleLED(ON, RELAY_LED_PIN);
 }
 
 void loop() {
   
 }
 
-void testRelay(){
+void testRelay() {
   toggleLED(OFF, RELAY_LED_PIN);
   toggleLED(OFF, RX_LED_PIN);
   toggleRelay(OFF);
@@ -43,12 +44,12 @@ void testRelay(){
   delay(2000);
 }
 
-void cycleRelay(int times){
-  for (int i = 0; i < times; i++){
-    toggleRelay(OFF);
+void cycleRelay(int times) {
+  for (int i = 0; i < times; i++) {
+    //toggleRelay(OFF);
     toggleLED(OFF, RELAY_LED_PIN);
     delay(500);
-    toggleRelay(ON);
+    //toggleRelay(ON);
     toggleLED(ON, RELAY_LED_PIN);
     delay(500);
   }
