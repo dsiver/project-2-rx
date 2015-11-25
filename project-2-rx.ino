@@ -9,31 +9,33 @@
  */
 
 #include <VirtualWire.h>
+#define RELAY_LED_PIN 6
 #define RELAY_PIN 7
 #define RELAY_NO_CLOSED HIGH
 #define RELAY_NO_OPEN LOW
-#define RELAY_LED_PIN 6
-#define RX_PIN 3
 #define RX_LED_PIN 2
+#define RX_PIN 3
+#define RX_BAUD 2000
 #define OFF "off"
 #define ON "on"
 #define NONE "none"
+#define DEBUG_BAUD 9600
 
 String relayStatus;
 
 void setup() {
   relayStatus = OFF;
-  Serial.begin(9600);
+  Serial.begin(DEBUG_BAUD);
   pinMode(RELAY_PIN, OUTPUT);
   pinMode(RELAY_LED_PIN, OUTPUT);
   pinMode(RX_LED_PIN, OUTPUT);
-  //toggleRelay(ON);
-  toggleLED(ON, RELAY_LED_PIN);
   vw_set_ptt_inverted(true);
-  vw_setup(2000);
-  vw_set_rx_pin(2);
+  vw_setup(RX_BAUD);
+  vw_set_rx_pin(RX_PIN);
   vw_rx_start();
   delay(2000);
+  //toggleRelay(ON);
+  toggleLED(ON, RELAY_LED_PIN);
 }
 
 void loop() {
@@ -65,11 +67,9 @@ void cycleRelay(int times) {
 void toggleLED(String mode, int pin) {
   if (mode == ON) {
     digitalWrite(pin, HIGH);
-    //Serial.println("LED ON");
   }
   else if (mode == OFF) {
     digitalWrite(pin, LOW);
-    //Serial.println("LED OFF");
   }
 }
 
