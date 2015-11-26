@@ -23,7 +23,8 @@
 
 String relayStatus;
 boolean messageReceived = false;
-const unsigned long relayInterval = 500;
+boolean relayReady = false;
+const unsigned long relayInterval = 5000;
 unsigned long previousTime = 0;
 
 uint8_t buf[VW_MAX_MESSAGE_LEN];
@@ -41,15 +42,18 @@ void setup() {
   vw_rx_start();
   delay(2000);
   toggleRelay(ON);
+  relayReady = true;
   toggleLED(ON, RELAY_LED_PIN);
 }
 
 void loop() {
+  unsigned long now = millis();
   if (vw_get_message(buf, &buflen)) {
     messageReceived = true;
     Serial.print("Message: ");
     for (int i = 0; i < buflen; i++) {
       Serial.print(buf[i]);
+      buf[i] = 0;
     }
     Serial.println("");
   }
@@ -58,10 +62,24 @@ void loop() {
     toggleLED(ON, RX_LED_PIN);
     delay(250);
     toggleLED(OFF, RX_LED_PIN);
-    cycleRelay(3);
+    if (relayReady) {
+      previousTime = now;
+      cycleRelay(3);
+      relayReady = false;
+    }
   }
   else {
     toggleLED(OFF, RX_LED_PIN);
+  }
+  if (now - previousTime > relayInterval) {
+    previousTime = now;
+    relayReady = true;
+    for (int i = 0; i < 2; i++) {
+      toggleLED(OFF, RELAY_LED_PIN);
+      delay(50);
+      toggleLED(ON, RELAY_LED_PIN);
+      delay(50);
+    }
   }
 }
 
