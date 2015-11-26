@@ -22,6 +22,12 @@
 #define DEBUG_BAUD 9600
 
 String relayStatus;
+boolean messageReceived = false;
+const unsigned long relayInterval = 500;
+unsigned long previousTime = 0;
+
+uint8_t buf[VW_MAX_MESSAGE_LEN];
+uint8_t buflen = VW_MAX_MESSAGE_LEN;
 
 void setup() {
   relayStatus = OFF;
@@ -34,31 +40,37 @@ void setup() {
   vw_set_rx_pin(RX_PIN);
   vw_rx_start();
   delay(2000);
-  //toggleRelay(ON);
+  toggleRelay(ON);
   toggleLED(ON, RELAY_LED_PIN);
 }
 
 void loop() {
-  uint8_t buf[VW_MAX_MESSAGE_LEN];
-  uint8_t buflen = VW_MAX_MESSAGE_LEN;
   if (vw_get_message(buf, &buflen)) {
-    toggleLED(ON, RX_LED_PIN);
+    messageReceived = true;
     Serial.print("Message: ");
     for (int i = 0; i < buflen; i++) {
       Serial.print(buf[i]);
     }
     Serial.println("");
-  } else {
+  }
+  if (messageReceived) {
+    messageReceived = false;
+    toggleLED(ON, RX_LED_PIN);
+    delay(250);
+    toggleLED(OFF, RX_LED_PIN);
+    cycleRelay(3);
+  }
+  else {
     toggleLED(OFF, RX_LED_PIN);
   }
 }
 
 void cycleRelay(int times) {
   for (int i = 0; i < times; i++) {
-    //toggleRelay(OFF);
+    toggleRelay(OFF);
     toggleLED(OFF, RELAY_LED_PIN);
     delay(500);
-    //toggleRelay(ON);
+    toggleRelay(ON);
     toggleLED(ON, RELAY_LED_PIN);
     delay(500);
   }
@@ -77,12 +89,10 @@ void toggleRelay(String mode) {
   if (mode == ON) {
     digitalWrite(RELAY_PIN, RELAY_NO_CLOSED);
     relayStatus = ON;
-    Serial.println("RELAY_NO_CLOSED");
   }
   else if (mode == OFF) {
     digitalWrite(RELAY_PIN, RELAY_NO_OPEN);
     relayStatus = OFF;
-    Serial.println("RELAY_NO_OPEN");
   }
 }
 
