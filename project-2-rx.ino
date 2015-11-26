@@ -48,39 +48,55 @@ void setup() {
 
 void loop() {
   unsigned long now = millis();
+  toggleLED(OFF, RX_LED_PIN);
   if (vw_get_message(buf, &buflen)) {
     messageReceived = true;
-    Serial.print("Message: ");
-    for (int i = 0; i < buflen; i++) {
-      Serial.print(buf[i]);
-      buf[i] = 0;
-    }
-    Serial.println("");
+    printMessage();
   }
   if (messageReceived) {
     messageReceived = false;
     toggleLED(ON, RX_LED_PIN);
-    delay(250);
+    delay(200);
     toggleLED(OFF, RX_LED_PIN);
-    if (relayReady) {
-      previousTime = now;
-      cycleRelay(3);
-      relayReady = false;
-    }
+    checkRelayReady(now);
   }
-  else {
-    toggleLED(OFF, RX_LED_PIN);
+
+
+  resetRelay(now);
+}
+
+void checkRelayReady(unsigned long now) {
+  if (relayReady) {
+    previousTime = now;
+    cycleRelay(3);
+    relayReady = false;
   }
+}
+
+void resetRelay(unsigned long now) {
   if (now - previousTime > relayInterval) {
     previousTime = now;
     relayReady = true;
-    for (int i = 0; i < 2; i++) {
-      toggleLED(OFF, RELAY_LED_PIN);
-      delay(50);
-      toggleLED(ON, RELAY_LED_PIN);
-      delay(50);
-    }
+    cycleLED(RELAY_LED_PIN, 3);
   }
+}
+
+void cycleLED(int pin, int times) {
+  for (int i = 0; i < times; i++) {
+    toggleLED(OFF, pin);
+    delay(50);
+    toggleLED(ON, pin);
+    delay(50);
+  }
+}
+
+void printMessage() {
+  Serial.print("Message: ");
+  for (int i = 0; i < buflen; i++) {
+    Serial.print(buf[i]);
+    buf[i] = 0;
+  }
+  Serial.println("");
 }
 
 void cycleRelay(int times) {
