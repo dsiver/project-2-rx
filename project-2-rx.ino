@@ -32,7 +32,7 @@ uint8_t buflen = VW_MAX_MESSAGE_LEN;
 
 void setup() {
   relayStatus = OFF;
-  Serial.begin(DEBUG_BAUD);
+  //Serial.begin(DEBUG_BAUD);
   pinMode(RELAY_PIN, OUTPUT);
   pinMode(RELAY_LED_PIN, OUTPUT);
   pinMode(RX_LED_PIN, OUTPUT);
@@ -51,7 +51,7 @@ void loop() {
   toggleLED(OFF, RX_LED_PIN);
   if (vw_get_message(buf, &buflen)) {
     messageReceived = true;
-    printMessage();
+    //printMessage();
   }
   if (messageReceived) {
     messageReceived = false;
